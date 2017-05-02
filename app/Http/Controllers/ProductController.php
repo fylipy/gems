@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Product;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return response()->view('products.index');
+        return view('products.index');
     }
 
     /**
@@ -24,7 +25,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::pluck('name', 'id');
+        return view('products.create', compact('categories'));
     }
 
     /**
@@ -35,7 +37,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'title'         => 'required|unique:products|max:255',
+            'content'       => 'required',
+            'price'         => 'required|numeric',
+            'visible'       => 'boolean',
+            'category_id'   => 'exists:categories,id'
+        ]);
+        dd($request->all());
     }
 
     /**
