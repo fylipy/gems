@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Image;
 use App\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +21,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products.index');
+        $products = Product::all();
+        return view('products.index', compact('products'));
     }
 
     /**
@@ -44,7 +51,24 @@ class ProductController extends Controller
             'visible'       => 'boolean',
             'category_id'   => 'exists:categories,id'
         ]);
-        dd($request->all());
+
+        $product = Product::create($request->all());  // Creating the product
+
+        foreach ($request->image as $i){
+            $destinationPath = 'images';
+            $filename = $i->getClientOriginalName();
+            $i->move($destinationPath, $filename);  // Saving the images into the folder
+
+            $extension = $i->getClientOriginalExtension();
+            $image = new Image();   // Saving the images into the database
+            $image->mime = $i->getClientMimeType();
+            $image->original_name = $filename;
+            $image->name = $i->getFilename().'.'.$extension;
+            $image->product_id = $product->id;
+            $image->save();
+        }
+
+        return redirect('products')->with('success', 'Producto creado correctamente!');
     }
 
     /**
@@ -66,7 +90,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        return 'editing';
     }
 
     /**
@@ -89,6 +113,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        return 'deleting';
     }
 }

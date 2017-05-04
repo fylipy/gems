@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Image extends Model
 {
-    //
+    protected $table = 'images';
 
-    public function products()
+    public function product()
     {
-        return $this->belongsToMany('App\Product');
+        return $this->belongsTo('App\Product');
     }
 }

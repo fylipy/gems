@@ -16,6 +16,10 @@ class CreateImagesTable extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('mime');
+            $table->string('original_name');
+            $table->integer('product_id')->unsigned();
+            $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
             $table->softDeletes();
         });
