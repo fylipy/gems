@@ -18,7 +18,7 @@ class CreateProductsTable extends Migration
             $table->string('title');
             $table->text('content');
             $table->double('price');
-            $table->boolean('visible');
+            $table->boolean('visible')->default(0);
             $table->string('color')->nullable();
             $table->integer('category_id')->unsigned();
             $table->foreign('category_id')->references('id')->on('categories');

@@ -54,18 +54,21 @@ class ProductController extends Controller
 
         $product = Product::create($request->all());  // Creating the product
 
-        foreach ($request->image as $i){
-            $destinationPath = 'images';
-            $filename = $i->getClientOriginalName();
-            $i->move($destinationPath, $filename);  // Saving the images into the folder
+        if ($request->image)
+        {
+            foreach ($request->image as $i){
+                $destinationPath = 'images';
+                $filename = $i->getClientOriginalName();
+                $i->move($destinationPath, $filename);  // Saving the images into the folder
 
-            $extension = $i->getClientOriginalExtension();
-            $image = new Image();   // Saving the images into the database
-            $image->mime = $i->getClientMimeType();
-            $image->original_name = $filename;
-            $image->name = $i->getFilename().'.'.$extension;
-            $image->product_id = $product->id;
-            $image->save();
+                $extension = $i->getClientOriginalExtension();
+                $image = new Image();   // Saving the images into the database
+                $image->mime = $i->getClientMimeType();
+                $image->original_name = $filename;
+                $image->name = $i->getFilename().'.'.$extension;
+                $image->product_id = $product->id;
+                $image->save();
+            }
         }
 
         return redirect('products')->with('success', 'Producto creado correctamente!');
@@ -79,7 +82,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return view('products.show', compact('product'));
     }
 
     /**
@@ -90,7 +93,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        return 'editing';
+        $categories = Category::pluck('name', 'id');
+        return view('products.edit', compact('product', 'categories'));
     }
 
     /**
@@ -102,7 +106,39 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $this->validate($request, [
+            'title'         => 'required|max:255|unique:products,id,'.$product->id,
+            'content'       => 'required',
+            'price'         => 'required|numeric',
+            'visible'       => 'boolean',
+            'category_id'   => 'exists:categories,id'
+        ]);
+
+        $product->update($request->all());
+        if (!$request->visible)
+        {
+            $product->visible = 0;
+            $product->save();
+        }
+
+        if ($request->image)
+        {
+            foreach ($request->image as $i){
+                $destinationPath = 'images';
+                $filename = $i->getClientOriginalName();
+                $i->move($destinationPath, $filename);  // Saving the images into the folder
+
+                $extension = $i->getClientOriginalExtension();
+                $image = new Image();   // Saving the images into the database
+                $image->mime = $i->getClientMimeType();
+                $image->original_name = $filename;
+                $image->name = $i->getFilename().'.'.$extension;
+                $image->product_id = $product->id;
+                $image->save();
+            }
+        }
+
+        return redirect('products')->with('success', 'Producto editado correctamente!');
     }
 
     /**
