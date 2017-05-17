@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Product;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => 'welcome']);
     }
 
     /**
@@ -27,9 +28,10 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function welcome()
+    public function welcome(Request $request)
     {
-        $products = Product::all();
-        return view('welcome', compact('products'));
+        $products = Product::where('title', 'like', '%'.$request->get('search').'%' )->where('visible', 1)->get();
+        $categories = Category::all();
+        return view('welcome', compact('products', 'categories'));
     }
 }

@@ -1253,8 +1253,9 @@ module.exports = g;
 
 /***/ }),
 /* 12 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -1266,6 +1267,7 @@ __webpack_require__(33);
 
 window.Vue = __webpack_require__(46);
 window.swal = __webpack_require__(42);
+window.axios = __webpack_require__(14);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -2138,23 +2140,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            'product_id': ''
-        };
-    },
-
+    props: ['product_id'],
     methods: {
         confirmDelete: function confirmDelete() {
+            var id = this.product_id;
             swal({
-                title: "Se eliminará el registro!",
-                text: "Está seguro de eliminar este registro?",
+                title: "Se eliminará el producto!",
+                text: "Está seguro de eliminar este prodcuto?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
@@ -2162,13 +2156,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 cancelButtonText: "No, cancelar.",
                 closeOnConfirm: true
             }, function () {
-                swal("Here's a message!");
+                axios.delete('/products/' + id).then(function (response) {
+                    swal({
+                        title: "Eliminado!",
+                        text: "El producto ha sido eliminado correctamente.",
+                        type: "success",
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    setTimeout(location.reload.bind(location), 2100);
+                }).catch(function (response) {
+                    console.log(response);
+                });
             });
         }
     }
-    //        mounted() {
-    //            console.log('Component mounted.')
-    //        }
 });
 
 /***/ }),
@@ -33051,34 +33053,12 @@ module.exports = function normalizeComponent (
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.product_id),
-      expression: "product_id"
-    }],
-    attrs: {
-      "type": "hidden"
-    },
-    domProps: {
-      "value": (_vm.product_id)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.product_id = $event.target.value
-      }
-    }
-  }), _vm._v(" "), _c('input', {
+  return _c('div', [_c('button', {
     staticClass: "btn btn-danger",
-    attrs: {
-      "value": "Eliminar"
-    },
     on: {
       "click": _vm.confirmDelete
     }
-  })])
+  }, [_vm._v("Eliminar")])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {

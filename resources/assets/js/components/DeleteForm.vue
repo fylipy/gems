@@ -1,25 +1,20 @@
 <template>
     <div>
-        <!--<form v-on:submit.prevent="confirmDelete">-->
-            <input type="hidden" v-model="product_id">
-            <input class="btn btn-danger" value="Eliminar" v-on:click="confirmDelete">
-            <!--<input type="submit" value="Eliminar" class="btn btn-danger">-->
-        <!--</form>-->
+        <button class="btn btn-danger" v-on:click="confirmDelete">Eliminar</button>
     </div>
 </template>
 
 <script>
     export default {
-        data (){
-          return{
-              'product_id' : '',
-          }
-        },
+        props: [
+            'product_id'
+        ],
         methods: {
             confirmDelete(){
+                var id = this.product_id
                 swal({
-                    title: "Se eliminará el registro!",
-                    text: "Está seguro de eliminar este registro?",
+                    title: "Se eliminará el producto!",
+                    text: "Está seguro de eliminar este prodcuto?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#DD6B55",
@@ -28,12 +23,21 @@
                     closeOnConfirm: true,
                 },
                 function(){
-                    swal("Here's a message!")
+                    axios.delete('/products/'+id)
+                        .then(response => {
+                            swal({
+                                title: "Eliminado!",
+                                text: "El producto ha sido eliminado correctamente.",
+                                type: "success",
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            setTimeout(location.reload.bind(location), 2100);
+                        }).catch(response => {
+                         console.log(response)
+                    })
                 });
             }
-        }
-//        mounted() {
-//            console.log('Component mounted.')
-//        }
+        },
     }
 </script>

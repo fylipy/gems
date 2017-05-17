@@ -9,6 +9,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 window.swal = require('sweetalert');
+window.axios = require('axios');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -3,11 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    protected $table = 'products';
+    use SoftDeletes;
 
+    protected $dates = ['deleted_at'];
+    protected $table = 'products';
     protected $fillable = ['title', 'content', 'price', 'visible', 'color', 'category_id'];
 
     public function category()

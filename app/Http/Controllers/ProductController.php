@@ -6,6 +6,7 @@ use App\Category;
 use App\Image;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -49,7 +50,8 @@ class ProductController extends Controller
             'content'       => 'required',
             'price'         => 'required|numeric',
             'visible'       => 'boolean',
-            'category_id'   => 'exists:categories,id'
+            'category_id'   => 'exists:categories,id',
+            'image'         => 'max:5000'
         ]);
 
         $product = Product::create($request->all());  // Creating the product
@@ -149,6 +151,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        return 'deleting';
+        $product->delete();
+        return response()->json(['ok'=> true], 200);
     }
 }

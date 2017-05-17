@@ -24,7 +24,7 @@
                             <div class="col-md-4">
                                 <div class="thumbnail">
                                     <a href="{{ route('products.show', [$p->id]) }}">
-                                        <img src="@if($p->getFirstImage()) {{ asset('images/'.$p->getFirstImage()->original_name) }} @else {{ asset('images/default_image.jpg') }} @endif">
+                                        <img src="@if($p->getFirstImage()) {{ asset('images/'.$p->getFirstImage()->original_name) }} @else {{ asset('images/default_image.jpg') }} @endif" style="max-height: 154px;">
                                     </a>
                                     <div class="caption">
                                         <h3><a href="{{ route('products.show', [$p->id]) }}">{{ $p->title }}</a></h3>
@@ -39,14 +39,7 @@
                                                 <a href="{{ route('products.edit', [$p->id]) }}" class="btn btn-success">Editar</a>
                                             </div>
                                             <div class="col-md-3" id="delete_form">
-                                                {{--<delete-form></delete-form>--}}
-                                                <delete-form></delete-form>
-                                                {{--<form v-on:submit.prevent="confirmDelete">--}}
-                                                    {{--<input type="hidden" v-model="product_id" value="{{ $p->id }}">--}}
-                                                {{--</form>--}}
-                                                {{--{{ Form::open(['method' => 'DELETE', 'route' => ['products.destroy', $p->id], 'id' => 'delete_from']) }}--}}
-                                                    {{--{{ Form::submit('Eliminar', ['class' => 'btn btn-danger']) }}--}}
-                                                {{--{{ Form::close() }}--}}
+                                                <delete-form :product_id={{ $p->id }}></delete-form>
                                             </div>
                                         </div>
                                     </div>
